@@ -10,18 +10,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Calendar, X } from "lucide-react"
 import Link from "next/link"
 import RichTextEditor from "@/components/admin/RichTextEditor"
-import { createEvent } from "../actions"
+import { updateEvent } from "../../actions"
 
-export default function CreateEventPage() {
+type Event = {
+  id: string
+  title: string
+  description: string | null
+  date: string
+  image_url: string | null
+  video_url: string | null
+  link: string | null
+}
+
+export default function EditEventForm({ event }: { event: Event }) {
   const router = useRouter()
-  const [content, setContent] = useState("")
+  const [content, setContent] = useState(event.description || "")
   const [imageType, setImageType] = useState<"url" | "upload">("url")
   const [videoType, setVideoType] = useState<"url" | "upload">("url")
   const [imagePreview, setImagePreview] = useState("")
   const [videoPreview, setVideoPreview] = useState("")
-  const [imageUrl, setImageUrl] = useState("")
-  const [videoUrl, setVideoUrl] = useState("")
+  const [imageUrl, setImageUrl] = useState(event.image_url || "")
+  const [videoUrl, setVideoUrl] = useState(event.video_url || "")
   const [loading, setLoading] = useState(false)
+
+  // Tarihi datetime-local formatına çevir
+  const date = new Date(event.date)
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16)
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -75,32 +91,48 @@ export default function CreateEventPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
-
+    
     try {
       const formData = new FormData(e.currentTarget)
       formData.set("content", content)
       
-      // Eğer URL seçiliyse, dosya alanını temizle
+      // URL/Dosya seçimi
       if (imageType === "url") {
         formData.delete("imageFile")
+        if (!imageUrl.trim()) {
+          formData.set("imageUrl", "")
+        }
       } else {
         formData.delete("imageUrl")
+        const file = formData.get("imageFile") as File
+        if (!file || file.size === 0) {
+          formData.delete("imageFile")
+        }
       }
       
       if (videoType === "url") {
         formData.delete("videoFile")
+        if (!videoUrl.trim()) {
+          formData.set("videoUrl", "")
+        }
       } else {
         formData.delete("videoUrl")
+        const file = formData.get("videoFile") as File
+        if (!file || file.size === 0) {
+          formData.delete("videoFile")
+        }
       }
       
-      await createEvent(formData)
-      // Redirect server action'da yapılıyor, bu satırlar çalışmayacak
+      const result = await updateEvent(event.id, formData)
+      
+      // ✅ Başarılıysa yönlendir
+      if (result?.success) {
+        router.push("/admin/events")
+      }
     } catch (error: any) {
       console.error(error)
-      // NEXT_REDIRECT hatası başarılı demektir, gösterme
-      if (!error?.message?.includes('NEXT_REDIRECT')) {
-        alert("Hata oluştu: " + error?.message || error)
-      }
+      // ✅ Sadece gerçek hataları göster
+      alert(error.message || "Bir hata oluştu")
     } finally {
       setLoading(false)
     }
@@ -114,7 +146,7 @@ export default function CreateEventPage() {
             <ArrowLeft className="w-5 h-5" />
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">Yeni Etkinlik Oluştur</h1>
+        <h1 className="text-2xl font-bold">Etkinliği Düzenle</h1>
       </div>
 
       <Card>
@@ -127,6 +159,7 @@ export default function CreateEventPage() {
                 id="title"
                 name="title"
                 placeholder="Etkinlik başlığı"
+                defaultValue={event.title}
                 required
               />
             </div>
@@ -146,6 +179,7 @@ export default function CreateEventPage() {
                   id="date"
                   name="date"
                   type="datetime-local"
+                  defaultValue={localDate}
                   required
                   className="pl-10"
                 />
@@ -309,6 +343,7 @@ export default function CreateEventPage() {
                 name="link"
                 placeholder="https://example.com"
                 type="url"
+                defaultValue={event.link || ""}
               />
             </div>
 
@@ -319,7 +354,7 @@ export default function CreateEventPage() {
                 </Button>
               </Link>
               <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Oluşturuluyor..." : "Oluştur"}
+                {loading ? "Güncelleniyor..." : "Güncelle"}
               </Button>
             </div>
           </form>

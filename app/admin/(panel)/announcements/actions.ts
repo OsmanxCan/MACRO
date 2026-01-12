@@ -145,21 +145,19 @@ export async function updateAnnouncement(formData: FormData) {
 
   const imageUpload = formData.get("imageFile") as File | null
   if (imageUpload && imageUpload.size > 0) {
+    // Eski dosyayı sil
     if (existingAnnouncement?.image_file) {
       await supabase.storage.from("announcements").remove([existingAnnouncement.image_file])
     }
 
     const fileExt = imageUpload.name.split('.').pop()
     const fileName = `img_${Date.now()}.${fileExt}`
-    
+
     const { data, error } = await supabase.storage
       .from("announcements")
       .upload(fileName, imageUpload)
 
-    if (error) {
-      console.error("Resim yükleme hatası:", error)
-      throw new Error("Resim yüklenemedi: " + error.message)
-    }
+    if (error) throw new Error("Resim yüklenemedi: " + error.message)
 
     const { data: { publicUrl } } = supabase.storage
       .from("announcements")
@@ -170,7 +168,18 @@ export async function updateAnnouncement(formData: FormData) {
   } else {
     const urlInput = formData.get("imageUrl") as string
     if (urlInput && urlInput.trim() !== '') {
+      // URL girildiyse, eski dosyayı sil
+      if (existingAnnouncement?.image_file) {
+        await supabase.storage.from("announcements").remove([existingAnnouncement.image_file])
+      }
       imageUrl = urlInput.trim()
+      imageFile = null
+    } else {
+      // Hiçbir şey girilmediyse, resmi tamamen kaldır
+      if (existingAnnouncement?.image_file) {
+        await supabase.storage.from("announcements").remove([existingAnnouncement.image_file])
+      }
+      imageUrl = null
       imageFile = null
     }
   }
@@ -183,15 +192,12 @@ export async function updateAnnouncement(formData: FormData) {
 
     const fileExt = videoUpload.name.split('.').pop()
     const fileName = `vid_${Date.now()}.${fileExt}`
-    
+
     const { data, error } = await supabase.storage
       .from("announcements")
       .upload(fileName, videoUpload)
 
-    if (error) {
-      console.error("Video yükleme hatası:", error)
-      throw new Error("Video yüklenemedi: " + error.message)
-    }
+    if (error) throw new Error("Video yüklenemedi: " + error.message)
 
     const { data: { publicUrl } } = supabase.storage
       .from("announcements")
@@ -202,7 +208,16 @@ export async function updateAnnouncement(formData: FormData) {
   } else {
     const urlInput = formData.get("videoUrl") as string
     if (urlInput && urlInput.trim() !== '') {
+      if (existingAnnouncement?.video_file) {
+        await supabase.storage.from("announcements").remove([existingAnnouncement.video_file])
+      }
       videoUrl = urlInput.trim()
+      videoFile = null
+    } else {
+      if (existingAnnouncement?.video_file) {
+        await supabase.storage.from("announcements").remove([existingAnnouncement.video_file])
+      }
+      videoUrl = null
       videoFile = null
     }
   }
@@ -226,7 +241,6 @@ export async function updateAnnouncement(formData: FormData) {
   }
 
   revalidatePath("/admin/announcements")
-  redirect("/admin/announcements")
 }
 
 export async function deleteAnnouncement(id: string) {

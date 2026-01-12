@@ -10,34 +10,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Calendar, X } from "lucide-react"
 import Link from "next/link"
 import RichTextEditor from "@/components/admin/RichTextEditor"
-import { updateEvent } from "../../actions"
+import { createEvent } from "../actions"
 
-type Event = {
-  id: string
-  title: string
-  description: string | null
-  date: string
-  image_url: string | null
-  video_url: string | null
-  link: string | null
-}
-
-export default function EditEventForm({ event }: { event: Event }) {
+export default function CreateEventPage() {
   const router = useRouter()
-  const [content, setContent] = useState(event.description || "")
+  const [content, setContent] = useState("")
   const [imageType, setImageType] = useState<"url" | "upload">("url")
   const [videoType, setVideoType] = useState<"url" | "upload">("url")
   const [imagePreview, setImagePreview] = useState("")
   const [videoPreview, setVideoPreview] = useState("")
-  const [imageUrl, setImageUrl] = useState(event.image_url || "")
-  const [videoUrl, setVideoUrl] = useState(event.video_url || "")
+  const [imageUrl, setImageUrl] = useState("")
+  const [videoUrl, setVideoUrl] = useState("")
   const [loading, setLoading] = useState(false)
-
-  // Tarihi datetime-local formatına çevir
-  const date = new Date(event.date)
-  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16)
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -94,7 +78,6 @@ export default function EditEventForm({ event }: { event: Event }) {
 
     try {
       const formData = new FormData(e.currentTarget)
-      formData.append("id", event.id)
       formData.set("content", content)
       
       // Eğer URL seçiliyse, dosya alanını temizle
@@ -110,8 +93,11 @@ export default function EditEventForm({ event }: { event: Event }) {
         formData.delete("videoUrl")
       }
       
-      await updateEvent(event.id, formData)
-      // Redirect server action'da yapılıyor, bu satırlar çalışmayacak
+      const result = await createEvent(formData)
+
+      if (result?.success) {
+        router.push("/admin/events")
+      }
     } catch (error: any) {
       console.error(error)
       // NEXT_REDIRECT hatası başarılı demektir, gösterme
@@ -131,7 +117,7 @@ export default function EditEventForm({ event }: { event: Event }) {
             <ArrowLeft className="w-5 h-5" />
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">Etkinliği Düzenle</h1>
+        <h1 className="text-2xl font-bold">Yeni Etkinlik Oluştur</h1>
       </div>
 
       <Card>
@@ -144,7 +130,6 @@ export default function EditEventForm({ event }: { event: Event }) {
                 id="title"
                 name="title"
                 placeholder="Etkinlik başlığı"
-                defaultValue={event.title}
                 required
               />
             </div>
@@ -164,7 +149,6 @@ export default function EditEventForm({ event }: { event: Event }) {
                   id="date"
                   name="date"
                   type="datetime-local"
-                  defaultValue={localDate}
                   required
                   className="pl-10"
                 />
@@ -328,7 +312,6 @@ export default function EditEventForm({ event }: { event: Event }) {
                 name="link"
                 placeholder="https://example.com"
                 type="url"
-                defaultValue={event.link || ""}
               />
             </div>
 
@@ -339,7 +322,7 @@ export default function EditEventForm({ event }: { event: Event }) {
                 </Button>
               </Link>
               <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Güncelleniyor..." : "Güncelle"}
+                {loading ? "Oluşturuluyor..." : "Oluştur"}
               </Button>
             </div>
           </form>

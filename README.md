@@ -1,3 +1,16 @@
+# Macro Community Website
+
+A community website covering the fields of Information Technology, Construction Machinery, and Aircraft Technologies.
+
+## Updates (Changelog)
+
+### 2026-01-13
+- Admin panel added
+- Announcement - event - about system created
+- Auht protection with middleware
+- Dark and Light Mode
+- optimization
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

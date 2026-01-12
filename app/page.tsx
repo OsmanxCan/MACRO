@@ -2,6 +2,7 @@ import { Calendar, Info, Megaphone, Cpu, Plane, Cog, ExternalLink } from 'lucide
 import { getAbout, getAnnouncements, getEvents } from "@/lib/supabase/queries";
 import Link from 'next/link';
 import DOMPurify from "isomorphic-dompurify";
+import Navbar from '@/components/navbar';
 
 export default async function HomePage() {
   const announcements = await getAnnouncements();
@@ -11,40 +12,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">M</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                MACRO
-              </h1>
-              <p className="text-xs text-muted-foreground">Teknoloji Topluluğu</p>
-            </div>
-          </div>
-          
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#hakkinda" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-              Hakkımızda
-            </a>
-            <a href="#duyurular" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-              Duyurular
-            </a>
-            <a href="#etkinlikler" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-              Etkinlikler
-            </a>
-          </nav>
-
-          <Link 
-            href="/admin/login"
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
-          >
-            Giriş
-          </Link>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">

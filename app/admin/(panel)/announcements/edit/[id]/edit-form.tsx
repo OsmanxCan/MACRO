@@ -99,14 +99,30 @@ export default function EditAnnouncementForm({
 
       if (imageType === "url") {
         formData.delete("imageFile")
+        // URL boşsa, backend'e boş string gönder
+        if (!imageUrl.trim()) {
+          formData.set("imageUrl", "")
+        }
       } else {
         formData.delete("imageUrl")
+        // Dosya seçilmediyse, boş file gönderme
+        const file = formData.get("imageFile") as File
+        if (!file || file.size === 0) {
+          formData.delete("imageFile")
+        }
       }
-
+      
       if (videoType === "url") {
         formData.delete("videoFile")
+        if (!videoUrl.trim()) {
+          formData.set("videoUrl", "")
+        }
       } else {
         formData.delete("videoUrl")
+        const file = formData.get("videoFile") as File
+        if (!file || file.size === 0) {
+          formData.delete("videoFile")
+        }
       }
 
       await updateAnnouncement(formData)

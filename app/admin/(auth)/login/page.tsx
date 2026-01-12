@@ -32,7 +32,7 @@ export default function LoginPage() {
       return
     }
 
-    // 🔥 SESSION COOKIE YAZILDI → MIDDLEWARE OK
+    // SESSION COOKIE YAZILDI → MIDDLEWARE OK
     router.replace("/admin/dashboard")
   }
 
@@ -40,7 +40,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Admin Login</CardTitle>
+          <CardTitle>Yönetici Girişi</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
