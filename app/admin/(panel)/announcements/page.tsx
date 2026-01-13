@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import DeleteAnnouncementButton from "./delete-button"
 import Link from "next/link"
 import { Plus, Pencil, ExternalLink, Video } from "lucide-react"
+import DOMPurify from "isomorphic-dompurify"
 
 export default async function AnnouncementsPage() {
   const supabase = await createSupabaseServer()
@@ -104,10 +105,13 @@ export default async function AnnouncementsPage() {
 
                   {/* İçerik */}
                   <TableCell>
-                    <div className="max-w-md line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
-                      {announcement.content}
-                    </div>
-                  </TableCell>
+                      <div
+                        className="max-w-xl line-clamp-2 text-sm text-gray-600 dark:text-gray-400"
+                         dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(announcement.content || "Açıklama yok"),
+                      }}
+                      />
+                    </TableCell>
 
                   {/* Medya Badge'leri */}
                   <TableCell>

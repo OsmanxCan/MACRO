@@ -64,11 +64,11 @@ const menuItems = [
     href: "/admin/events",
     icon: FileText,
   },
-  {
-    title: "Ayarlar",
-    href: "/admin/settings",
-    icon: Settings,
-  },
+  // {
+  //   title: "Ayarlar",
+  //   href: "/admin/settings",
+  //   icon: Settings,
+  // },
 ]
 
 const roleLabels: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {

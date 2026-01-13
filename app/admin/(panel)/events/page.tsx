@@ -97,14 +97,13 @@ export default async function EventsPage() {
 
                     {/* Açıklama */}
                     <TableCell>
-  <div
-    className="max-w-md line-clamp-2 text-sm text-gray-600 dark:text-gray-400"
-     dangerouslySetInnerHTML={{
-    __html: DOMPurify.sanitize(event.description || "Açıklama yok"),
-  }}
-  />
-</TableCell>
-
+                      <div
+                        className="max-w-md line-clamp-2 text-sm text-gray-600 dark:text-gray-400"
+                         dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(event.description || "Açıklama yok"),
+                      }}
+                      />
+                    </TableCell>
                     {/* Tarih */}
                     <TableCell className="text-sm text-gray-600 dark:text-gray-400">
                       {eventDate.toLocaleDateString("tr-TR", {
