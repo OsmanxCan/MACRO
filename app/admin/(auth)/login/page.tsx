@@ -21,10 +21,12 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
+
 
     if (error) {
       setError(error.message)
@@ -32,8 +34,13 @@ export default function LoginPage() {
       return
     }
 
-    // SESSION COOKIE YAZILDI → MIDDLEWARE OK
-    router.replace("/admin/dashboard")
+    
+    // Session var mı kontrol et
+    const { data: session } = await supabase.auth.getSession()
+
+    // Yönlendir
+    router.push("/admin/dashboard")
+    router.refresh()
   }
 
   return (
