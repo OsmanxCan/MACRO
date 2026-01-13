@@ -1,7 +1,7 @@
 import { Calendar, Info, Megaphone, Cpu, Plane, Cog, ExternalLink } from 'lucide-react';
 import { getAbout, getAnnouncements, getEvents } from "@/lib/supabase/queries";
 import Link from 'next/link';
-import DOMPurify from "isomorphic-dompurify";
+import DOMPurify from 'dompurify'
 import Navbar from '@/components/navbar';
 
 export default async function HomePage() {

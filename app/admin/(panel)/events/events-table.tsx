@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Pencil, Calendar } from "lucide-react"
 import DeleteEventButton from "./delete-button"
-import DOMPurify from "isomorphic-dompurify"
+import DOMPurify from 'dompurify'
 
 interface Event {
   id: string

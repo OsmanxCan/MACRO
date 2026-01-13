@@ -4,7 +4,7 @@
 
 import { Announcement } from '@/types'
 import Link from 'next/link'
-import DOMPurify from 'isomorphic-dompurify'
+import DOMPurify from 'dompurify'
 
 interface AnnouncementsListProps {
   announcements: Announcement[]

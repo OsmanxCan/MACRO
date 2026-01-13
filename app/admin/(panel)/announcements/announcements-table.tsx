@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import DeleteAnnouncementButton from "./delete-button"
 import Link from "next/link"
 import { Pencil, ExternalLink, Video } from "lucide-react"
-import DOMPurify from "isomorphic-dompurify"
+import DOMPurify from 'dompurify'
 
 interface Announcement {
   id: string

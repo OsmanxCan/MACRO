@@ -4,7 +4,7 @@
 
 import { Event } from '@/types'
 import Link from 'next/link'
-import DOMPurify from 'isomorphic-dompurify'
+import DOMPurify from 'dompurify'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 
 interface EventDetailProps {
