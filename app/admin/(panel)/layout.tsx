@@ -49,7 +49,6 @@
 //   )
 // }
 
-
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { AppSidebar } from "@/components/admin/app-sidebar"
@@ -64,7 +63,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  // 🔥 ASIL FARK BURASI
   const cookieStore = await cookies()
 
   const supabase = createServerClient(
@@ -75,8 +73,12 @@ export default async function AdminLayout({
         getAll() {
           return cookieStore.getAll()
         },
-        setAll() {
-          // Server Component olduğu için boş
+        setAll(cookiesToSet) {
+          // Server Component'te cookie setlemeye gerek yok
+          // Ama type error'dan kaçınmak için boş implement edilmeli
+          cookiesToSet.forEach(({ name, value }) => {
+            cookieStore.set(name, value)
+          })
         },
       },
     }
@@ -86,6 +88,7 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Ekstra güvenlik katmanı
   if (!user) {
     redirect("/admin/login")
   }
@@ -95,6 +98,11 @@ export default async function AdminLayout({
     .select("role")
     .eq("id", user.id)
     .single()
+
+  // Role kontrolü de ekleyebilirsiniz
+  if (profile?.role !== "admin" && profile?.role !== "moderator") {
+    redirect("/") // Yetkisi yoksa ana sayfaya at
+  }
 
   const userRole = profile?.role ?? "admin"
   const userEmail = user.email ?? ""
