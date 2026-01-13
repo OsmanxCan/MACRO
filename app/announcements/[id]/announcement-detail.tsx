@@ -1,17 +1,18 @@
 // (Client Component)
-
 "use client"
 
 import { Announcement } from '@/types'
 import Link from 'next/link'
-import DOMPurify from 'dompurify'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
+import { useSanitize } from '@/lib/hooks/useSanitize'
 
 interface AnnouncementDetailProps {
   announcement: Announcement
 }
 
 export default function AnnouncementDetail({ announcement }: AnnouncementDetailProps) {
+  const sanitizedContent = useSanitize(announcement.content)
+
   return (
     <>
       <Link 
@@ -50,10 +51,12 @@ export default function AnnouncementDetail({ announcement }: AnnouncementDetailP
             </span>
           </div>
           
-          <div 
-            className="prose prose-lg prose-slate dark:prose-invert max-w-none mb-8"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(announcement.content) }}
-          />
+          {sanitizedContent && (
+            <div 
+              className="prose prose-lg prose-slate dark:prose-invert max-w-none mb-8"
+              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+            />
+          )}
 
           {announcement.video_url && (
             <div className="mb-8">

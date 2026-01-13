@@ -1,8 +1,7 @@
 import { Calendar, Info, Megaphone, Cpu, Plane, Cog, ExternalLink } from 'lucide-react';
 import { getAbout, getAnnouncements, getEvents } from "@/lib/supabase/queries";
-import Link from 'next/link';
-import DOMPurify from 'dompurify'
 import Navbar from '@/components/navbar';
+import SanitizedContent from '@/components/SanitizedContent'; // YENİ
 
 export default async function HomePage() {
   const announcements = await getAnnouncements();
@@ -65,9 +64,10 @@ export default async function HomePage() {
                       />
                     </div>
                   )}
-                  <div 
+                  {/* DEĞİŞTİ: DOMPurify.sanitize yerine SanitizedContent */}
+                  <SanitizedContent 
+                    content={about.content}
                     className="prose prose-slate dark:prose-invert max-w-none"
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(about.content) }}
                   />
                 </div>
               ) : (
@@ -113,9 +113,10 @@ export default async function HomePage() {
                             {new Date(announcement.created_at).toLocaleDateString('tr-TR')}
                           </span>
                         </div>
-                        <div 
+                        {/* DEĞİŞTİ */}
+                        <SanitizedContent 
+                          content={announcement.content}
                           className="prose prose-sm prose-slate dark:prose-invert max-w-none mb-4 line-clamp-3"
-                          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(announcement.content) }}
                         />
                         {announcement.link && (
                           <a 
@@ -175,9 +176,10 @@ export default async function HomePage() {
                           )}
                         </div>
                         {event.description && (
-                          <div 
+                          /* DEĞİŞTİ */
+                          <SanitizedContent 
+                            content={event.description}
                             className="prose prose-sm prose-slate dark:prose-invert max-w-none mb-4 line-clamp-3"
-                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(event.description) }}
                           />
                         )}
                         {event.link && (

@@ -1,17 +1,17 @@
 // (Client Component)
-
 "use client"
 
 import { Event } from '@/types'
 import Link from 'next/link'
-import DOMPurify from 'dompurify'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
+import { useSanitize } from '@/lib/hooks/useSanitize'
 
 interface EventDetailProps {
   event: Event
 }
 
 export default function EventDetail({ event }: EventDetailProps) {
+  const sanitizedDescription = useSanitize(event.description || '')
   const eventDate = new Date(event.date)
   const isUpcoming = eventDate > new Date()
 
@@ -82,12 +82,12 @@ export default function EventDetail({ event }: EventDetailProps) {
             </div>
           </div>
           
-          {event.description && (
+          {sanitizedDescription && (
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Etkinlik Detayları</h2>
               <div 
                 className="prose prose-lg prose-slate dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(event.description) }}
+                dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
               />
             </div>
           )}
