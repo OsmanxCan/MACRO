@@ -1,51 +1,29 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { createServerClient } from "@supabase/ssr"
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return req.cookies.getAll()
-        },
-        setAll(cookies) {
-          cookies.forEach((cookie) => {
-            res.cookies.set(cookie)
-          })
-        },
-      },
-    }
-  )
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const pathname = req.nextUrl.pathname
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
 
   // 🔓 serbest sayfalar
   if (
     pathname === "/admin/login" ||
     pathname === "/admin/set-password"
   ) {
-    return res
+    return NextResponse.next()
   }
 
-  // 🔒 giriş yoksa → login (COOKIE KORUNUR)
-  if (!user) {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = "/admin/login"
-    return NextResponse.redirect(redirectUrl, {
-      headers: res.headers, // 🔥 cookie’ler kaybolmaz
-    })
+  // ⚠️ sadece cookie VAR MI kontrol et (auth yapma)
+  const hasSession =
+    req.cookies.get("sb-access-token") ||
+    req.cookies.get("sb-refresh-token")
+
+  if (!hasSession) {
+    const url = req.nextUrl.clone()
+    url.pathname = "/admin/login"
+    return NextResponse.redirect(url)
   }
 
-  return res
+  return NextResponse.next()
 }
 
 export const config = {
