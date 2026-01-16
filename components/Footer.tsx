@@ -80,7 +80,7 @@ export default function () {
                   Makine • Havacılık • Bilgisayar • Robotik • Otomasyon
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Gaziantep Üniversitesi bünyesinde faaliyet gösteren, 
+                  Isparta Uygulamalı Bilimler Üniversitesi bünyesinde faaliyet gösteren, 
                   geleceğin mühendislerini yetiştiren teknoloji topluluğu.
                 </p>
               </div>
@@ -89,8 +89,8 @@ export default function () {
                 <h4 className="text-lg font-bold mb-4">Hızlı Linkler</h4>
                 <ul className="space-y-2">
                   <li><a href="#hakkinda" className="text-sm text-muted-foreground hover:text-primary transition-colors">Hakkımızda</a></li>
-                  <li><a href="#duyurular" className="text-sm text-muted-foreground hover:text-primary transition-colors">Duyurular</a></li>
-                  <li><a href="#etkinlikler" className="text-sm text-muted-foreground hover:text-primary transition-colors">Etkinlikler</a></li>
+                  <li><a href="/announcements" className="text-sm text-muted-foreground hover:text-primary transition-colors">Duyurular</a></li>
+                  <li><a href="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">Etkinlikler</a></li>
                   <li><a href="/kayit-ol" className="text-sm text-muted-foreground hover:text-primary transition-colors">Üye Ol</a></li>
                 </ul>
               </div>
@@ -98,16 +98,16 @@ export default function () {
               <div>
                 <h4 className="text-lg font-bold mb-4">İletişim</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>Gaziantep Üniversitesi</li>
-                  <li>Teknoloji Fakültesi</li>
-                  <li>Gaziantep, Türkiye</li>
+                  <li>Isparta Uygulamalı Bilimler Üniversitesi</li>
+                  <li>Keçiborlu Meslek Yüksek Okullu</li>
+                  <li>Isparta, Türkiye</li>
                 </ul>
               </div>
             </div>
             
             <div className="pt-8 border-t text-center">
               <p className="text-sm text-muted-foreground">
-                © 2025 MACRO Topluluğu. Tüm hakları saklıdır.
+                © 2026 MACRO Topluluğu. Tüm hakları saklıdır.
               </p>
             </div>
             <div className="pt-8 text-right">
