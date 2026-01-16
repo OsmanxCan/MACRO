@@ -47,9 +47,10 @@ const menuItems = [
     title: "Duyurular",
     href: "/admin/announcements",
     icon: Megaphone,
+    roles: ["super_admin", "admin"],
   },
   {
-    title: "Kullanıcılar",
+    title: "Kullanıcılar 2",
     href: "/admin/users",
     icon: Users,
     roles: ["super_admin"],
@@ -58,11 +59,31 @@ const menuItems = [
     title: "Hakkımızda",
     href: "/admin/about",
     icon: BarChart3,
+    roles: ["super_admin", "admin"],
   },
   {
     title: "Etkinlikler",
     href: "/admin/events",
     icon: FileText,
+    roles: ["super_admin", "admin"],
+  },
+  {
+    title: "Kullanıcılar 1",
+    href: "/admin/kullanicilar",
+    icon: FileText,
+    roles: ["super_admin", "admin"],
+  },
+  {
+    title: "Bekleyen Bavurular",
+    href: "/admin/bekleyen-basvurular",
+    icon: FileText,
+    roles: ["super_admin", "admin"],
+  },
+  {
+    title: "Sonuclanan Başvurular",
+    href: "/admin/sonuclanan-basvurular",
+    icon: FileText,
+    roles: ["super_admin", "admin"],
   },
   // {
   //   title: "Ayarlar",
@@ -183,10 +204,10 @@ export function AppSidebar({
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/admin/settings">
+              {/* <Link href="/admin/settings">
                 <Settings className="mr-2 h-4 w-4" />
                 Ayarlar
-              </Link>
+              </Link> */}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-red-600">

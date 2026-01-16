@@ -4,6 +4,7 @@ import { getEventById } from '@/lib/supabase/queries'
 import { notFound } from 'next/navigation'
 import Navbar from '@/components/navbar'
 import EventDetail from './event-detail'
+import Footer from '@/components/Footer'
 
 export default async function EventDetailPage({
   params,
@@ -21,15 +22,21 @@ export default async function EventDetailPage({
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <EventDetail event={event} />
+      {/* Hero Background */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:64px_64px]" />
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full blur-[100px]" />
+        </div>
+
+        <div className="container relative mx-auto px-4 pt-32 pb-16 max-w-5xl">
+          <EventDetail event={event} />
+        </div>
       </div>
 
-      <footer className="border-t bg-muted/50 mt-16">
-        <div className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
-          <p>© 2025 MACRO Topluluğu. Tüm hakları saklıdır.</p>
-        </div>
-      </footer>
+      {/* FOOTER */}
+      <Footer />
     </div>
   )
 }

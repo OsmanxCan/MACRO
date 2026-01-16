@@ -4,7 +4,17 @@ A community website covering the fields of Information Technology, Construction 
 
 ## Updates (Changelog)
 
-### 2026-01-13
+### 2026-01-16 v2
+- User management system added
+- Email services integrated
+- User profile system implemented
+- Dynamic application form added
+- Application review system (Approve / Reject) added
+- PDF generation, preview, and download support for approved applications
+- Completely redesigned GSAP-based UI for the user side
+
+
+### 2026-01-13 v1
 - Admin panel added
 - Announcement - event - about system created
 - Auht protection with middleware
@@ -47,3 +57,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+---
+This project is developed and maintained by **OCB STD**.  
+Email services and system infrastructure are supported by **ocbstd.com**.
