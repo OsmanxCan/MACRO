@@ -7,6 +7,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '@/components/navbar';
 import SanitizedContent from '@/components/SanitizedContent';
 import Footer from '../Footer';
+import { useButtonTracking } from '@/hooks/useButtonTracking';
+import { usePageTracking } from '@/hooks/usePageTracking';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -23,6 +25,16 @@ export default function HomePage({ announcements, events, about }: PageProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorDotRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { trackClick } = useButtonTracking();
+
+  usePageTracking({
+    pageName: 'home',
+    pageTitle: 'Ana Sayfa - MACRO',
+    additionalData: {
+      announcements_count: announcements.length,
+      events_count: events.length
+    }
+  });
 
   // Custom Cursor & Mouse Follower
   useEffect(() => {
@@ -345,7 +357,12 @@ export default function HomePage({ announcements, events, about }: PageProps) {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a 
-                href="#kesfet" 
+                href="#kesfet"
+                onClick={() => trackClick({ 
+                  buttonName: 'hero_kesfet', 
+                  section: 'hero', 
+                  page: 'home' 
+                })}
                 className="hero-cta group relative px-10 py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white text-lg font-bold rounded-full overflow-hidden hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"
               >
                 <span className="relative z-10 flex items-center gap-3">
@@ -356,7 +373,12 @@ export default function HomePage({ announcements, events, about }: PageProps) {
               </a>
               
               <a 
-                href="#etkinlikler" 
+                href="#etkinlikler"
+                onClick={() => trackClick({ 
+                  buttonName: 'hero_etkinikler', 
+                  section: 'hero', 
+                  page: 'home' 
+                })}
                 className="hero-cta group px-10 py-5 bg-background/50 backdrop-blur-sm border-2 border-primary/30 text-foreground text-lg font-bold rounded-full hover:bg-primary/10 hover:border-primary/60 hover:scale-105 transition-all duration-300"
               >
                 <span className="flex items-center gap-3">
@@ -366,7 +388,12 @@ export default function HomePage({ announcements, events, about }: PageProps) {
               </a>
 
               <a 
-                href="/kayit-ol" 
+                href="/kayit-ol"
+                onClick={() => trackClick({ 
+                  buttonName: 'hero_uye_ol', 
+                  section: 'hero', 
+                  page: 'home' 
+                })}
                 className="hero-cta group px-10 py-5 bg-background/50 backdrop-blur-sm border-2 border-green-500/30 text-foreground text-lg font-bold rounded-full hover:bg-green-500/10 hover:border-green-500/60 hover:scale-105 transition-all duration-300"
               >
                 <span className="flex items-center gap-3">
@@ -690,6 +717,15 @@ export default function HomePage({ announcements, events, about }: PageProps) {
                           {announcement.link && (
                             <a 
                               href={announcement.link}
+                              onClick={() => trackClick({ 
+                                buttonName: 'announcement_link', 
+                                section: 'announcement', 
+                                page: 'home',
+                                additionalData: {
+                                  announcement_id: announcement.id,
+                                  announcement_title: announcement.title
+                                }
+                              })}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full hover:scale-105 hover:shadow-lg transition-all group/link"
@@ -768,6 +804,16 @@ export default function HomePage({ announcements, events, about }: PageProps) {
                           {event.link && (
                             <a 
                               href={event.link}
+                              onClick={() => trackClick({
+                                buttonName: 'event_registration',
+                                section: 'events',
+                                page: 'home',
+                                additionalData: {
+                                  event_id: event.id,
+                                  event_title: event.title,
+                                  event_date: event.date
+                                }
+                              })}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-600 to-red-600 text-white font-semibold rounded-full hover:scale-105 hover:shadow-lg transition-all group/link"

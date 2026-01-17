@@ -8,6 +8,7 @@ import { Calendar, ExternalLink, Megaphone, ArrowRight } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useButtonTracking } from '@/hooks/useButtonTracking'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -16,6 +17,7 @@ if (typeof window !== 'undefined') {
 function AnnouncementCard({ announcement, index }: { announcement: Announcement; index: number }) {
   const sanitizedContent = useSanitize(announcement.content)
   const cardRef = useRef<HTMLDivElement>(null)
+  const { trackClick } = useButtonTracking()
 
   useEffect(() => {
     if (cardRef.current) {
@@ -35,10 +37,26 @@ function AnnouncementCard({ announcement, index }: { announcement: Announcement;
     }
   }, [index])
 
+  const handleAnnouncementClick = () => {
+    trackClick({
+      buttonName: 'announcement_card',
+      section: 'announcements_list',
+      page: 'announcements',
+      additionalData: {
+        announcement_id: announcement.id,
+        announcement_title: announcement.title,
+        has_image: !!announcement.image_url,
+        has_link: !!announcement.link,
+        card_position: index + 1
+      }
+    })
+  }
+
   return (
     <div ref={cardRef}>
       <Link
         href={`/announcements/${announcement.id}`}
+        onClick={handleAnnouncementClick}
         className="group block h-full"
       >
         <div className="relative h-full rounded-3xl bg-card/50 backdrop-blur-sm border border-border hover:border-purple-500/50 overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl">
@@ -128,6 +146,7 @@ interface AnnouncementsListProps {
 
 export default function AnnouncementsList({ announcements }: AnnouncementsListProps) {
   const emptyRef = useRef<HTMLDivElement>(null)
+  const { trackClick } = useButtonTracking()
 
   useEffect(() => {
     if (emptyRef.current && announcements.length === 0) {
@@ -139,6 +158,14 @@ export default function AnnouncementsList({ announcements }: AnnouncementsListPr
       })
     }
   }, [announcements.length])
+
+  const handleBackHomeClick = () => {
+    trackClick({
+      buttonName: 'back_to_home',
+      section: 'empty_announcements',
+      page: 'announcements'
+    })
+  }
 
   if (announcements.length === 0) {
     return (
@@ -155,6 +182,7 @@ export default function AnnouncementsList({ announcements }: AnnouncementsListPr
             </p>
             <a 
               href="/"
+              onClick={handleBackHomeClick}
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full hover:scale-105 hover:shadow-lg transition-all"
             >
               <span>Ana Sayfaya Dön</span>

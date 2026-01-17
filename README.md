@@ -4,6 +4,13 @@ A community website covering the fields of Information Technology, Construction 
 
 ## Updates (Changelog)
 
+## V2 Cumulative Update
+## Added Additional Features
+- Cookie System
+- Cookie Analysis Panel
+## Fixes
+- Login, Sign Up, Password Reset and Forgot Password pages
+
 ### 2026-01-16 v2
 - User management system added
 - Email services integrated

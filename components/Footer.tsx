@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { createSupabaseClient } from '@/lib/supabase/client';
+import { useButtonTracking } from '@/hooks/useButtonTracking';
 
 export default function () {
   const { theme, setTheme } = useTheme()
@@ -24,6 +25,7 @@ export default function () {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const supabase = createSupabaseClient()
+  const { trackClick } = useButtonTracking();
 
   useEffect(() => setMounted(true), [])
 
@@ -88,10 +90,30 @@ export default function () {
               <div>
                 <h4 className="text-lg font-bold mb-4">Hızlı Linkler</h4>
                 <ul className="space-y-2">
-                  <li><a href="#hakkinda" className="text-sm text-muted-foreground hover:text-primary transition-colors">Hakkımızda</a></li>
-                  <li><a href="/announcements" className="text-sm text-muted-foreground hover:text-primary transition-colors">Duyurular</a></li>
-                  <li><a href="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors">Etkinlikler</a></li>
-                  <li><a href="/kayit-ol" className="text-sm text-muted-foreground hover:text-primary transition-colors">Üye Ol</a></li>
+                  <li><a href="#hakkinda" className="text-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => trackClick({
+                        buttonName: 'footer_hakkimizda',
+                        section: 'footer',
+                        page: window.location.pathname
+                      })}>Hakkımızda</a>
+                  </li>
+                  <li><a href="/announcements" className="text-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => trackClick({
+                        buttonName: 'footer_duyurular',
+                        section: 'footer',
+                        page: window.location.pathname
+                      })}>Duyurular</a>
+                  </li>
+                  <li><a href="/events" className="text-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => trackClick({
+                        buttonName: 'footer_etkinlikler',
+                        section: 'footer',
+                        page: window.location.pathname
+                      })}>Etkinlikler</a>
+                  </li>
+                  <li><a href="/kayit-ol" className="text-sm text-muted-foreground hover:text-primary transition-colors" onClick={() => trackClick({
+                        buttonName: 'footer_uye_ol',
+                        section: 'footer',
+                        page: window.location.pathname
+                      })}>Üye Ol</a>
+                  </li>
                 </ul>
               </div>
               
@@ -112,7 +134,11 @@ export default function () {
             </div>
             <div className="pt-8 text-right">
               <p className="text-sm text-muted-foreground">
-                <a href="http://ocbstd.com" target="_blank" rel="noopener noreferrer">© Power by OCB STD</a>
+                <a href="http://ocbstd.com" target="_blank" rel="noopener noreferrer" onClick={() => trackClick({
+                    buttonName: 'footer_ocb_link',
+                    section: 'footer',
+                    page: window.location.pathname
+                  })}>© Power by OCB STD</a>
               </p>
             </div>
           </div>

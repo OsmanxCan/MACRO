@@ -11,6 +11,8 @@ import {
   BarChart3,
   ChevronDown,
   LogOut,
+  User,
+  Home,
 } from "lucide-react"
 
 import {
@@ -84,6 +86,12 @@ const menuItems = [
     href: "/admin/sonuclanan-basvurular",
     icon: FileText,
     roles: ["super_admin", "admin"],
+  },
+  {
+    title: "Analiz",
+    href: "/admin/analytics",
+    icon: FileText,
+    roles: ["super_admin"],
   },
   // {
   //   title: "Ayarlar",
@@ -203,12 +211,18 @@ export function AppSidebar({
               </div>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              {/* <Link href="/admin/settings">
-                <Settings className="mr-2 h-4 w-4" />
-                Ayarlar
-              </Link> */}
-            </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/profile">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/">
+                  <Home className="mr-2 h-4 w-4" />
+                  Ana Sayfa
+                </Link>
+              </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout} className="text-red-600">
               <LogOut className="mr-2 h-4 w-4" />

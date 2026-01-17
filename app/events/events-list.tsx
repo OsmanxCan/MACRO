@@ -8,6 +8,7 @@ import { useSanitize } from '@/lib/hooks/useSanitize'
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useButtonTracking } from '@/hooks/useButtonTracking'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -18,6 +19,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
   const eventDate = new Date(event.date)
   const isUpcoming = eventDate > new Date()
   const cardRef = useRef<HTMLDivElement>(null)
+  const { trackClick } = useButtonTracking()
 
   useEffect(() => {
     if (cardRef.current) {
@@ -37,10 +39,26 @@ function EventCard({ event, index }: { event: Event; index: number }) {
     }
   }, [index])
 
+  const handleEventClick = () => {
+    trackClick({
+      buttonName: 'event_card',
+      section: 'event_list',
+      page: 'events',
+      additionalData: {
+        announcement_id: event.id,
+        announcement_title: event.title,
+        has_image: !!event.image_url,
+        has_link: !!event.link,
+        card_position: index + 1
+      }
+    })
+  }
+
   return (
     <div ref={cardRef}>
       <Link
         href={event.link || `/events/${event.id}`}
+        onClick={handleEventClick}
         target={event.link ? "_blank" : "_self"}
         rel={event.link ? "noopener noreferrer" : ""}
         className="group block h-full"
@@ -163,6 +181,7 @@ interface EventsListProps {
 
 export default function EventsList({ events }: EventsListProps) {
   const emptyRef = useRef<HTMLDivElement>(null)
+  const { trackClick } = useButtonTracking()
 
   useEffect(() => {
     if (emptyRef.current && events.length === 0) {
@@ -174,6 +193,14 @@ export default function EventsList({ events }: EventsListProps) {
       })
     }
   }, [events.length])
+
+  const handleBackHomeClick = () => {
+    trackClick({
+      buttonName: 'back_to_home',
+      section: 'empty_event',
+      page: 'events'
+    })
+  }
 
   if (events.length === 0) {
     return (
@@ -190,6 +217,7 @@ export default function EventsList({ events }: EventsListProps) {
             </p>
             <a 
               href="/"
+              onClick={handleBackHomeClick}
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-600 to-red-600 text-white font-semibold rounded-full hover:scale-105 hover:shadow-lg transition-all"
             >
               <span>Ana Sayfaya Dön</span>

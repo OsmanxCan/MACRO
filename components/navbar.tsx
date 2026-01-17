@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { createSupabaseClient } from '@/lib/supabase/client';
+import { useButtonTracking } from '@/hooks/useButtonTracking';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme()
@@ -23,6 +24,9 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true)
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { trackClick } = useButtonTracking();
+
+  
 
   useEffect(() => setMounted(true), [])
 
@@ -44,14 +48,11 @@ export default function Navbar() {
         const { data: { user }, error } = await supabase.auth.getUser()
         
         if (error) {
-          console.error('Kullanıcı bilgisi alınamadı:', error)
           setUser(null)
         } else {
-          console.log('Kullanıcı bilgisi:', user) // Debug için
           setUser(user)
         }
       } catch (error) {
-        console.error('Beklenmeyen hata:', error)
         setUser(null)
       } finally {
         setLoading(false)
@@ -62,7 +63,6 @@ export default function Navbar() {
 
     // Auth state değişikliklerini dinle
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth event:', event, session?.user) // Debug için
       
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         setUser(session?.user ?? null)
@@ -80,13 +80,31 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
+      trackClick({
+        buttonName: 'logout',
+        section: 'navbar',
+        page: window.location.pathname
+      });
+
       const supabase = createSupabaseClient()
       await supabase.auth.signOut()
       setUser(null)
     } catch (error) {
-      console.error('Çıkış yapılırken hata:', error)
+      ///
     }
   }
+
+  const handleThemeToggle = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    
+    trackClick({
+        buttonName: 'theme_toggle',
+        section: 'navbar',
+        page: window.location.pathname,
+        additionalData: { new_theme: newTheme }
+      });
+  };
 
   const getUserInitials = (email: string) => {
     if (!email) return 'U'
@@ -117,7 +135,12 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" onClick={() => trackClick({
+                    buttonName: 'logo',
+                    section: 'navbar',
+                    page: window.location.pathname
+                  })}
+                   className="flex items-center gap-3 group">
             <div className="w-12 h-12 flex items-center justify-center relative">
               <img 
                 src="/images/MACROlogo.png" 
@@ -139,6 +162,11 @@ export default function Navbar() {
             <a 
               href="/#hakkinda" 
               className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors relative group"
+              onClick={() => trackClick({
+                buttonName: 'nav_hakkimizda',
+                section: 'navbar',
+                page: window.location.pathname
+              })}
             >
               Hakkımızda
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300" />
@@ -146,6 +174,11 @@ export default function Navbar() {
             <Link 
               href="/announcements"
               className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors relative group"
+              onClick={() => trackClick({
+                buttonName: 'nav_duyurular',
+                section: 'navbar',
+                page: window.location.pathname
+              })}
             >
               Duyurular
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300" />
@@ -153,6 +186,11 @@ export default function Navbar() {
             <Link 
               href="/events"
               className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors relative group"
+              onClick={() => trackClick({
+                buttonName: 'nav_etkinlikler',
+                section: 'navbar',
+                page: window.location.pathname
+              })}
             >
               Etkinlikler
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-600 to-red-600 group-hover:w-full transition-all duration-300" />
@@ -188,7 +226,12 @@ export default function Navbar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
+                    <Link href="/profile" className="cursor-pointer" onClick={() => trackClick({
+                        buttonName: 'profile',
+                        section: 'navbar',
+                        page: window.location.pathname
+                      })}
+                    >
                       <User className="mr-2 h-4 w-4" />
                       <span>Profil</span>
                     </Link>
@@ -205,12 +248,22 @@ export default function Navbar() {
               </DropdownMenu>
             ) : (
               <>
-                <Link href="/giris" className="hidden sm:block">
+                <Link href="/giris" className="hidden sm:block" onClick={() => trackClick({
+                    buttonName: 'login',
+                    section: 'navbar',
+                    page: window.location.pathname
+                  })}
+                >
                   <Button variant="ghost" size="sm" className="font-semibold">
                     Giriş
                   </Button>
                 </Link>
-                <Link href="/kayit-ol">
+                <Link href="/kayit-ol" onClick={() => trackClick({
+                    buttonName: 'register',
+                    section: 'navbar',
+                    page: window.location.pathname
+                  })}
+                  >
                   <Button 
                     size="sm" 
                     className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold hover:scale-105 hover:shadow-lg transition-all"
@@ -226,7 +279,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={handleThemeToggle}
                 className="relative rounded-full hover:bg-primary/10 hover:scale-110 transition-all"
               >
                 {theme === "dark" ? (
