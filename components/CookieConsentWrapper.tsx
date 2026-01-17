@@ -8,9 +8,9 @@ import Cookies from "js-cookie";
 declare global {
   interface Window {
     gtag: (
-      command: string,
-      action: string,
-      params: Record<string, any>
+      command: "set" | "config" | "event" | "consent" | "js",
+      targetId: string | Date,
+      config?: Record<string, any>
     ) => void;
   }
 }
