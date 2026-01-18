@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Kullanıcı paneli kontrolü
-  if (request.nextUrl.pathname.startsWith('/panel')) {
+  if (request.nextUrl.pathname.startsWith('/profile')) {
     if (!user) {
       return NextResponse.redirect(new URL('/giris', request.url))
     }

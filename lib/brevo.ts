@@ -10,7 +10,7 @@ export async function sendEmailWithBrevo(
     },
     body: JSON.stringify({
       sender: {
-        name: "Kulüp Yönetimi",
+        name: "MACRO",
         email: "no-reply@ocbstd.com",
       },
       to: [{ email: to }],
