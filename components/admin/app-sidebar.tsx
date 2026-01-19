@@ -70,7 +70,7 @@ const menuItems = [
     roles: ["super_admin", "admin"],
   },
   {
-    title: "Kullanıcılar 1",
+    title: "Kullanıcılar",
     href: "/admin/kullanicilar",
     icon: FileText,
     roles: ["super_admin", "admin"],
