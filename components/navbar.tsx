@@ -16,7 +16,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { useButtonTracking } from '@/hooks/useButtonTracking';
-import { useRouter, usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme()
@@ -26,8 +25,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { trackClick } = useButtonTracking();
-  const router = useRouter();
-  const pathname = usePathname();
+
+  
 
   useEffect(() => setMounted(true), [])
 
@@ -40,51 +39,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Check if user account is suspended
-  const checkUserStatus = async (userId: string) => {
-    // Eğer zaten suspended sayfasındaysak kontrol etme
-    if (pathname === '/hesap-askiya-alindi' || pathname === '/account-suspended') {
-      return false
-    }
-
-    try {
-      const supabase = createSupabaseClient()
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('is_active')
-        .eq('id', userId)
-        .single()
-
-      if (error) {
-        return true
-      }
-
-      // Eğer hesap askıya alınmışsa
-      if (data && data.is_active === false) {
-        // ÖNCE state'leri temizle
-        setUser(null)
-        setLoading(false)
-        // SONRA logout yap ve yönlendir
-        await supabase.auth.signOut()
-        router.push('/account-suspended') // veya '/account-suspended'
-        return false
-      }
-
-      return true
-    } catch (error) {
-      return true
-    }
-  }
-
   // Auth state management
   useEffect(() => {
-    // Suspended sayfasındaysak direkt loading'i bitir
-    if (pathname === '/hesap-askiya-alindi' || pathname === '/account-suspended') {
-      setUser(null)
-      setLoading(false)
-      return
-    }
-
     const supabase = createSupabaseClient()
     
     const getUser = async () => {
@@ -93,23 +49,10 @@ export default function Navbar() {
         
         if (error) {
           setUser(null)
-          setLoading(false)
-          return
-        }
-        
-        if (user) {
-          // Kullanıcı durumunu kontrol et
-          const isActive = await checkUserStatus(user.id)
-          if (isActive) {
-            setUser(user)
-          } else {
-            setUser(null)
-          }
         } else {
-          setUser(null)
+          setUser(user)
         }
       } catch (error) {
-        console.error('Get user error:', error)
         setUser(null)
       } finally {
         setLoading(false)
@@ -120,51 +63,20 @@ export default function Navbar() {
 
     // Auth state değişikliklerini dinle
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        if (session?.user) {
-          // Suspended sayfasındaysak işlem yapma
-          if (pathname === '/hesap-askiya-alindi' || pathname === '/account-suspended') {
-            setUser(null)
-            setLoading(false)
-            return
-          }
-
-          const isActive = await checkUserStatus(session.user.id)
-          if (!isActive) {
-            // Hesap askıya alınmış, state'leri temizle
-            setUser(null)
-            setLoading(false)
-          } else {
-            setUser(session.user)
-            setLoading(false)
-          }
-        } else {
-          setUser(null)
-          setLoading(false)
-        }
+      
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        setUser(session?.user ?? null)
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
-        setLoading(false)
+      } else if (event === 'USER_UPDATED') {
+        setUser(session?.user ?? null)
       }
     })
 
     return () => {
       subscription.unsubscribe()
     }
-  }, [pathname])
-
-  // Periyodik olarak kullanıcı durumunu kontrol et (her 30 saniyede bir)
-  useEffect(() => {
-    if (!user) return
-    // Suspended sayfasındaysak periyodik kontrol yapma
-    if (pathname === '/hesap-askiya-alindi' || pathname === '/account-suspended') return
-
-    const intervalId = setInterval(async () => {
-      await checkUserStatus(user.id)
-    }, 30000) // 30 saniye
-
-    return () => clearInterval(intervalId)
-  }, [user, pathname])
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -177,8 +89,8 @@ export default function Navbar() {
       const supabase = createSupabaseClient()
       await supabase.auth.signOut()
       setUser(null)
-      router.push('/giris')
     } catch (error) {
+      ///
     }
   }
 
@@ -195,7 +107,7 @@ export default function Navbar() {
   };
 
   const getUserInitials = (email: string) => {
-    if (!email) return 'M'
+    if (!email) return 'U'
     return email.substring(0, 2).toUpperCase()
   }
 
@@ -296,7 +208,7 @@ export default function Navbar() {
                     <Avatar className="h-11 w-11">
                       <AvatarImage src={getUserAvatar()} alt={user.email || 'User'} />
                       <AvatarFallback className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold">
-                        {getUserInitials(user.email || 'M')}
+                        {getUserInitials(user.email || 'U')}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
